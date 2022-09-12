@@ -1,7 +1,6 @@
 import React from "react";
 import "./App.css";
 import { useState, useEffect } from "react";
-import { v4 as uuid } from "uuid";
 import { EditForm } from "./EditForm";
 import { AddTodoForm } from "./AddTodoForm";
 import { TodoRows } from "./TodoRows";
@@ -12,13 +11,16 @@ export const App = () => {
 
   const [todos, setTodos] = useState(() => {
     const savedTodos = localStorage.getItem("todos");
-
     if (savedTodos) {
       return JSON.parse(savedTodos);
     } else {
       return [];
     }
   });
+
+  const [todoId, setTodoId] = useState(todos.length + 1);
+  const [filter, setFilter] = useState("notStarted");
+  const [filteredTodos, setFilteredTodos] = useState([]);
 
   // set the todos to the local storage
   useEffect(() => {
@@ -32,12 +34,14 @@ export const App = () => {
       setTodos([
         ...todos,
         {
-          id: uuid(),
+          id: todoId,
           text: addTodo.trim(),
           description: description.trim(),
+          status: "incomplete",
         },
       ]);
     }
+    setTodoId(todoId + 1);
     setAddTodo("");
     setDescription("");
   };
@@ -90,6 +94,43 @@ export const App = () => {
     handleUpdateTodo(currentTodo.id, currentTodo);
   };
 
+  // handle status Changes
+  const handleStatusChange = (targetTodo, e) => {
+    const newArray = todos.map((todo) =>
+      todo.id === targetTodo.id ? { ...todo, status: e.target.value } : todo
+    );
+    setTodos(newArray);
+  };
+
+  const handleSetFilter = (e) => {
+    setFilter(e.target.value);
+  };
+
+  useEffect(() => {
+    const filteringTodos = () => {
+      switch (filter) {
+        case "incomplete":
+          setFilteredTodos(
+            todos.filter((todo) => todo.status === "incomplete")
+          );
+          break;
+        // 問題1.絞り込みの処理を書こう
+        case "onGoing":
+          setFilteredTodos(todos.filter((todo) => todo.status === "onGoing"));
+          break;
+        case "complete":
+          setFilteredTodos(todos.filter((todo) => todo.status === "complete"));
+          break;
+        // ここまで
+        default:
+          setFilteredTodos(todos);
+      }
+    };
+    // 問題2. filteringTodosを呼び出そう
+    filteringTodos();
+    //ここまで
+  }, [filter, todos]);
+
   return (
     <div className="App">
       {isEditing ? (
@@ -107,15 +148,18 @@ export const App = () => {
           onAddInputChange={handleInputChange}
           onAddDescriptionChange={handleDescriptionChange}
           onAddFormSubmit={onFormSubmit}
+          filter={filter}
+          onSetFilter={handleSetFilter}
         />
       )}
 
       <ul>
-        {todos.map((todo) => (
+        {filteredTodos.map((todo) => (
           <TodoRows
             todo={todo}
             onEditClick={handleEditClick}
             onDeleteClick={handleDeleteClick}
+            onStatusChange={handleStatusChange}
           />
         ))}
       </ul>
