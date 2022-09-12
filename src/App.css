@@ -32,6 +32,11 @@ textarea {
   outline: none;
 }
 
+.command-area {
+  display: flex;
+  margin-top: 5px;
+}
+
 .add-btn {
   border-radius: 50%;
   width: 30px;
