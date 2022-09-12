@@ -6,6 +6,8 @@ export const AddTodoForm = ({
   onAddFormSubmit,
   onAddInputChange,
   onAddDescriptionChange,
+  filter,
+  onSetFilter,
 }) => {
   return (
     <form onSubmit={onAddFormSubmit}>
@@ -32,6 +34,12 @@ export const AddTodoForm = ({
       <button type="submit" className="add-btn">
         +
       </button>
+      <select value={filter} onChange={onSetFilter}>
+        <option value="all">すべて</option>
+        <option value="incomplete">未着手</option>
+        <option value="onGoing">作業中</option>
+        <option value="complete">完了</option>
+      </select>
     </form>
   );
 };
