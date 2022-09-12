@@ -156,6 +156,7 @@ export const App = () => {
       <ul>
         {filteredTodos.map((todo) => (
           <TodoRows
+            key={todo.id}
             todo={todo}
             onEditClick={handleEditClick}
             onDeleteClick={handleDeleteClick}
