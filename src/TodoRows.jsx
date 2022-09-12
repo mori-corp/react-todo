@@ -1,6 +1,6 @@
 import React from "react";
 
-export const TodoRows = ({ todo, onEditClick, onDeleteClick }) => {
+export const TodoRows = ({ todo, onEditClick, onDeleteClick, onStatusChange }) => {
   return (
     <li key={todo.id}>
       <div>
@@ -13,7 +13,11 @@ export const TodoRows = ({ todo, onEditClick, onDeleteClick }) => {
           <button className="delete-btn" onClick={() => onDeleteClick(todo.id)}>
             Delete
           </button>
-          <select name="status">
+          <select
+            value={todo.status}
+            name="status"
+            onChange={(e) => onStatusChange(todo, e)}
+          >
             <option value="incomplete">未着手</option>
             <option value="onGoing">進行中</option>
             <option value="complete">完了</option>

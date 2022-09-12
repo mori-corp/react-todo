@@ -20,7 +20,7 @@ export const App = () => {
   });
 
   const [todoId, setTodoId] = useState(todos.length + 1);
-  
+
   // set the todos to the local storage
   useEffect(() => {
     localStorage.setItem("todos", JSON.stringify(todos));
@@ -36,6 +36,7 @@ export const App = () => {
           id: todoId,
           text: addTodo.trim(),
           description: description.trim(),
+          status: "incomplete",
         },
       ]);
     }
@@ -92,6 +93,13 @@ export const App = () => {
     handleUpdateTodo(currentTodo.id, currentTodo);
   };
 
+  const handleStatusChange = (targetTodo, e) => {
+    const newArray = todos.map((todo) =>
+      todo.id === targetTodo.id ? { ...todo, status: e.target.value } : todo
+    );
+    setTodos(newArray);
+  };
+
   return (
     <div className="App">
       {isEditing ? (
@@ -118,6 +126,7 @@ export const App = () => {
             todo={todo}
             onEditClick={handleEditClick}
             onDeleteClick={handleDeleteClick}
+            onStatusChange={handleStatusChange}
           />
         ))}
       </ul>
